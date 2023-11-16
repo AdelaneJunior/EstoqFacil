@@ -5,6 +5,7 @@ import br.ueg.cons.soft.estoqfacil.controller.ProdutoController;
 import br.ueg.cons.soft.estoqfacil.dto.MovimentacaoDTO;
 import br.ueg.cons.soft.estoqfacil.dto.ProdutoDTO;
 import br.ueg.cons.soft.estoqfacil.enums.AcaoMovimentacao;
+import br.ueg.cons.soft.estoqfacil.enums.TipoMovimentacao;
 import br.ueg.cons.soft.estoqfacil.model.*;
 import br.ueg.cons.soft.estoqfacil.repository.CargoRepository;
 import br.ueg.cons.soft.estoqfacil.repository.ImagemRepository;
@@ -61,7 +62,7 @@ public class InicialRunner implements ApplicationRunner {
     private PdfCreator creator;
 
     // mudar de acordo com o caminho do seu projeto
-    private final String ORIGEM = "C:\\Portable20231\\workspace\\EstoqFacil_BackEnd-master\\src\\fotos";
+    private final String ORIGEM = "C:\\Users\\Der Junge\\Documents\\GitHub\\EstoqFacil_BackEnd\\src\\fotos";
 
     public void initDados() throws IOException {
 
@@ -153,9 +154,7 @@ public class InicialRunner implements ApplicationRunner {
         Produto produto = Produto.builder()
                 .nome("Iphone 13")
                 .marca("Apple")
-                .preco(8500.00)
-                .quantidade(16L)
-                .custo(25.50)
+                .codigoBarras(17125896)
                 .categoria(categoria)
                 .usuario(usuario)
                 .imagem_id(imagem.getId())
@@ -164,7 +163,7 @@ public class InicialRunner implements ApplicationRunner {
 
         produto = produtoService.incluir(produto);
 
-        ProdutoDTO produtoDTO = produtoController.ObterPorId(produto.getCodigo()).getBody();
+        ProdutoDTO produtoDTO = produtoController.obterPorId(produto.getCodigo()).getBody();
 
         produtoDTOList.add(produtoDTO);
 
@@ -180,18 +179,16 @@ public class InicialRunner implements ApplicationRunner {
         produto = Produto.builder()
                 .nome("Iphone 15 Pro Max")
                 .marca("Apple")
-                .preco(15500.00)
-                .quantidade(10L)
-                .custo(30.50)
                 .categoria(categoria)
                 .usuario(usuario)
+                .codigoBarras(11125896)
                 .imagem_id(imagem.getId())
                 .descricao("Um celular caro")
                 .build();
 
         produto = produtoService.incluir(produto);
 
-        produtoDTO = produtoController.ObterPorId(produto.getCodigo()).getBody();
+        produtoDTO = produtoController.obterPorId(produto.getCodigo()).getBody();
 
         produtoDTOList.add(produtoDTO);
 
@@ -201,19 +198,25 @@ public class InicialRunner implements ApplicationRunner {
                 .usuario(usuario)
                 .produto(produto)
                 .quantidade(16L)
+                .preco(15500.00)
+                .quantidade(10L)
+                .custo(30.50)
                 .data(LocalDate.now())
                 .observacao("Adicionado para testes")
                 .acao(AcaoMovimentacao.COMPRA)
+                .tipo(TipoMovimentacao.ENTRADA)
                 .build();
 
         movimentacao = movimentacaoService.incluir(movimentacao);
 
-        MovimentacaoDTO movimentacaoDTO = movimentacaoController.ObterPorId(1L).getBody();
+        MovimentacaoDTO movimentacaoDTO = movimentacaoController.obterPorId(1L).getBody();
 
         System.out.println(movimentacaoDTO);
 
         creator.criaPdf(produtoDTOList);
 //        EmailSender.enviaEmail(""); colocar de acordo com o seu e-mail para o devido teste
+
+
     }
 
     @Override

@@ -32,11 +32,7 @@ public class Produto extends BaseEntidade<Long> {
 
         public static final String MARCA = "prod_marca";
 
-        public static final String QUANTIDADE = "prod_quantidade";
-
-        public static final String PRECO = "prod_preco_venda";
-
-        public static final String CUSTO = "prod_custo_aquisicao";
+        public static final String CODIGO_BARRAS = "prod_codigo_barras";
     }
 
     @SequenceGenerator(
@@ -76,16 +72,22 @@ public class Produto extends BaseEntidade<Long> {
     @Column(name = Produto.Coluna.DESCRICAO, nullable = false)
     private String descricao;
 
-    @Column(name = Produto.Coluna.QUANTIDADE, nullable = false)
-    private Long quantidade;
-
-    @Column(name = Produto.Coluna.PRECO, nullable = false)
-    private Double preco;
-
     @Column(name = Produto.Coluna.MARCA, nullable = false)
     private String marca;
 
-    @Column(name = Produto.Coluna.CUSTO, nullable = false)
+    @Column(name = Coluna.CODIGO_BARRAS, nullable = false, unique = true)
+    private long codigoBarras;
+
+    //@Column(name = Produto.Coluna.QUANTIDADE, nullable = false)
+    @Transient
+    private Long quantidade;
+
+    //@Column(name = Produto.Coluna.PRECO, nullable = false)
+    @Transient
+    private Double preco;
+
+    //@Column(name = Produto.Coluna.CUSTO, nullable = false)
+    @Transient
     private Double custo;
 
 }

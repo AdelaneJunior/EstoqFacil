@@ -2,6 +2,7 @@ package br.ueg.cons.soft.estoqfacil.service.impl;
 
 import br.ueg.cons.soft.estoqfacil.dto.ProdutoDTO;
 import br.ueg.cons.soft.estoqfacil.model.Produto;
+import br.ueg.cons.soft.estoqfacil.repository.MovimentacaoRepository;
 import br.ueg.cons.soft.estoqfacil.repository.ProdutoRepository;
 import br.ueg.cons.soft.estoqfacil.service.ProdutoService;
 import br.ueg.cons.soft.estoqfacil.util.EmailSender;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProdutoServiceImpl extends BaseCrudService<Produto, Long, ProdutoRepository>
@@ -20,6 +22,9 @@ public class ProdutoServiceImpl extends BaseCrudService<Produto, Long, ProdutoRe
 
     @Autowired
     ProdutoRepository repository;
+
+    @Autowired
+    MovimentacaoRepository movimentacaoRepository;
 
     @Autowired
     PdfCreator creator;
@@ -32,7 +37,10 @@ public class ProdutoServiceImpl extends BaseCrudService<Produto, Long, ProdutoRe
 
     @Override
     protected void validarDados(Produto entidade) {
-
+        Optional<Produto> produtoBD = repository.findProdutoByCodigoBarras(entidade.getCodigoBarras());
+        if(produtoBD.isPresent()){
+            throw new IllegalStateException("Codigo de barras ja cadastrado no banco de dados");
+        }
     }
 
     @Override
@@ -48,5 +56,18 @@ public class ProdutoServiceImpl extends BaseCrudService<Produto, Long, ProdutoRe
         } catch (EmailException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    @Override
+    public List<Produto> listarTodos(){
+        List<Produto> produtos = super.listarTodos();
+        /*produtos.forEach(produto -> {
+            long total = (movimentacaoRepository.totalProdutosSaida(produto.getCodigo()))
+                        -
+                        (movimentacaoRepository.totalProdutosEntrada(produto.getCodigo()));
+            produto.setQuantidade(total);
+        });*/
+        return produtos;
     }
 }
